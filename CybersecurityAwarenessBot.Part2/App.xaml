@@ -4,6 +4,10 @@
              xmlns:local="clr-namespace:CybersecurityAwarenessBot.Part2"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <SolidColorBrush x:Key="BgDark" Color="#0D1B2A" />
+        <SolidColorBrush x:Key="BgPanel" Color="#1B263B" />
+        <SolidColorBrush x:Key="AccentGreen" Color="#7CFFB2" />
+        <SolidColorBrush x:Key="AccentCyan" Color="#3DDCFF" />
+        <SolidColorBrush x:Key="TextLight" Color="#E0E1DD" />
     </Application.Resources>
 </Application>
