@@ -8,7 +8,8 @@
         Title="Cybersecurity Awareness Bot"
         Height="720" Width="900"
         MinHeight="560" MinWidth="700"
-        Background="{StaticResource BgDark}">
+        Background="{StaticResource BgDark}"
+        Loaded="Window_Loaded">
     <Grid Margin="14">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -44,14 +45,16 @@
                  FontSize="14" Padding="10"
                  Background="{StaticResource BgPanel}"
                  Foreground="{StaticResource TextLight}"
-                 CaretBrush="{StaticResource AccentGreen}"/>
+                 CaretBrush="{StaticResource AccentGreen}"
+                 KeyDown="InputBox_KeyDown"/>
 
             <Button x:Name="SendButton" Grid.Column="1" Content="Send"
                 Margin="10,0,0,0" Padding="24,10"
                 FontSize="14" FontWeight="Bold"
                 Background="{StaticResource AccentGreen}"
                 Foreground="#0D1B2A" BorderThickness="0"
-                Cursor="Hand"/>
+                Cursor="Hand"
+                Click="SendButton_Click"/>
         </Grid>
     </Grid>
 </Window>
