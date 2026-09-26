@@ -20,6 +20,10 @@ namespace CybersecurityAwarenessBot.Part2
             InitializeComponent();
         }
 
+        private readonly GreetingPlayer _greeting = new();
+        private readonly LogoArt _logo = new();
+
+
         /// <summary>
         /// Function is to add a message bubble to the chat panel and scrolls to the bottom
         /// </summary>
@@ -40,7 +44,20 @@ namespace CybersecurityAwarenessBot.Part2
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            // placeholder for now
+            // Store the art in the header
+            AsciiHeader.Text = _logo.GetLogo();
+
+            // Play the voice greeting and report it in the chat if it doesn't play
+            string? error = _greeting.PlayGreeting();
+            if (error != null) {
+                AddMessage("Bot", error, (Brush)FindResource("AccentGreen"));
+            }
+
+
+            AddMessage("Bot", "Hello! Welcome to the Cybersecurity Awareness Bot. What is your name?",(Brush)FindResource("AccentGreen"));
+
+            InputBox.Focus();
+
         }
 
 

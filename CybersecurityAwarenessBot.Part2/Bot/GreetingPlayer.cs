@@ -4,7 +4,8 @@ using System.IO;
 namespace CybersecurityAwarenessBot.Bot
 {
     /// <summary>
-    /// Class that calls the voice greeting when the application is started. The file is stored as WAV as System.Media.SoundPlayer only supports that format. 
+    /// Class that calls the voice greeting when the application is started. Does not write its own error messages as Part 2 has no console. It returns a message
+    /// describing what happens and the window decides how it will be displayed.
     /// </summary>
     internal class GreetingPlayer
     {
@@ -12,31 +13,22 @@ namespace CybersecurityAwarenessBot.Bot
         /// Stating the path to get greeting Bot file
         /// </summary>
         private const string GreetingPathway = @"Media\Bot.wav";
-        private readonly ConsoleDisplayManager _ui;
-
-
-        /// <summary>
-        /// Constructor of Greeting Player which takes the shared display manager so any error messages are formatted the same way as the rest of the output.
-        /// </summary>
-        /// <param name="ui">Takes in the display manager.</param>
-        public GreetingPlayer(ConsoleDisplayManager ui)
-        {
-            _ui = ui;
-        }
 
         /// <summary>
         /// This method plays the voice greeting. It is written so that if the audio file is missing or can't play, that a warning message will be shown instead of the
         /// program just crashing. 
         /// </summary>
-        public void PlayGreeting()
+        /// <returns>
+        /// Returns null if the greeting played is successfully, otherwise it returns a message explaining that the audio did not work.
+        /// </returns>
+        public string? PlayGreeting()
         {
             try
             {
-                // Checking if the file exists and if not it shows a warning message.
+                // Checking if the file exists and if not it return a warning message.
                 if (!File.Exists(GreetingPathway))
                 {
-                    _ui.BotWarning("Error: Voice Greeting was skipped - audio file not found.");
-                    return;
+                    return "Audio File not found: Voice greeting skipped.";
 
                 }
 
@@ -45,12 +37,13 @@ namespace CybersecurityAwarenessBot.Bot
                 player.Load();
                 // Ensure message and logo doesn't appear until the greeting is finished.
                 player.PlaySync();
+                return null;
 
             }
             catch (Exception ex)
             {
                 // Catches any error that may arise
-                _ui.BotWarning("Error: " + ex.Message);
+                return "Voice greeting could not be played. Error: " + ex.Message;
             }
         }
     }
