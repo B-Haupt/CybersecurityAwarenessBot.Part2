@@ -7,22 +7,28 @@ using CybersecurityAwarenessBot.Bot;
 namespace CybersecurityAwarenessBot.Part2
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// This class is responsible for the user interface. Meaning it deals with the displaying of messages, reading what the user types and passing it to the bot. All the chatbot logic
+    /// stays in the Bot classes.
     /// </summary>
     public partial class MainWindow : Window
     {
+
+        private readonly GreetingPlayer _greeting = new();
+        private readonly LogoArt _logo = new();
+        private readonly ChatBot _bot = new();
+        private readonly InputValidator _validator = new();
         /// <summary>
-        /// Main chat window deals with the handling of displaying messages and passing the user input to the bot. This window is only responsible for the user
-        /// interface, as all the logic stays in the Bot classes.
+        /// True until the user has given their name. Set it so that while it is true, whatever the user types in is stored as their name instead of treated like a question.
+        /// </summary>
+        private bool _awaitingName = true;
+
+        /// <summary>
+        /// Sets up the window and its controls
         /// </summary>
         public MainWindow()
         {
             InitializeComponent();
         }
-
-        private readonly GreetingPlayer _greeting = new();
-        private readonly LogoArt _logo = new();
-
 
         /// <summary>
         /// Function is to add a message bubble to the chat panel and scrolls to the bottom
@@ -32,16 +38,23 @@ namespace CybersecurityAwarenessBot.Part2
         /// <param name="colour">The colour of the text.</param>
         private void AddMessage(string sender, string message, Brush colour)
         {
-            var bubble = new TextBlock { Text = $"{sender}: {message}",
-            Foreground= colour,
-            TextWrapping= TextWrapping.Wrap,
-            Margin = new Thickness(0,0,0,10),
-            FontSize= 14};
+            var bubble = new TextBlock { 
+                Text = $"{sender}: {message}",
+                Foreground= colour,
+                TextWrapping= TextWrapping.Wrap,
+                Margin = new Thickness(0,0,0,10),
+                FontSize= 14
+            };
 
             ChatPanel.Children.Add(bubble);
             ChatScroll.ScrollToEnd();
         }
 
+        /// <summary>
+        /// Runs when the window opens. Displays the logo, plays the greeting and then asks the user for their name.
+        /// </summary>
+        /// <param name="sender">The window raising the event.</param>
+        /// <param name="e">Event data</param>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             // Store the art in the header
@@ -63,10 +76,10 @@ namespace CybersecurityAwarenessBot.Part2
 
 
         /// <summary>
-        /// Deals with the send button. Reads the input, shows it, gets a reply and clears the message for the next message.
+        /// Deals with the send button being clicked
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="sender">The button raising the event.</param>
+        /// <param name="e">Event data</param>
         private void SendButton_Click(object sender, RoutedEventArgs e) {
             SendMessage();
         }
@@ -74,10 +87,11 @@ namespace CybersecurityAwarenessBot.Part2
         /// <summary>
         ///  The user can click the enter button to send a input
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="sender">Text box raising the event</param>
+        /// <param name="e">Event data used to check which key was pressed</param>
         private void InputBox_KeyDown(object sender, KeyEventArgs e) {
-            if (e.Key == Key.Enter) {
+            if (e.Key == Key.Enter) 
+            {
                 SendMessage();
             }
         }
@@ -90,14 +104,29 @@ namespace CybersecurityAwarenessBot.Part2
             string userInput = InputBox.Text;
 
             // Checks if input is blank and returns if it is
-            if (string.IsNullOrWhiteSpace(userInput)) {
+            if (!_validator.IsValidInput(userInput)) {
                 return;
             }
 
-            AddMessage("You", userInput, (Brush)FindResource("TextLight"));
+            if (_awaitingName) 
+            {
+                _bot.User.Name = userInput.Trim();
+                _awaitingName = false;
 
-            //Placeholder till I build it
-            AddMessage("Bot", "I heard you", (Brush)FindResource("AccentGreen"));
+                AddMessage("You", userInput, (Brush)FindResource("TextLight"));
+
+                AddMessage("Bot", $"Welcome, {_bot.User.Name}! I'm a Cybersecurity Awareness Bot. You can ask me about password safety, phishing, safe browsing, "
+                    +"public wifi, online scams, links in emails and app permissions.",(Brush)FindResource("AccentGreen"));
+
+                InputBox.Clear();
+                InputBox.Focus();
+                return;
+            }
+
+            string label = string.IsNullOrWhiteSpace(_bot.User.Name) ? "You" : _bot.User.Name;
+            AddMessage(label, userInput, (Brush)FindResource("TextLight"));
+
+            AddMessage("Bot", _bot.GetReply(userInput), (Brush)FindResource("AccentGreen"));
 
             InputBox.Clear();
             InputBox.Focus();  
