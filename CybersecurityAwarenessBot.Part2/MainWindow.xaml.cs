@@ -116,7 +116,7 @@ namespace CybersecurityAwarenessBot.Part2
                 AddMessage("You", userInput, (Brush)FindResource("TextLight"));
 
                 AddMessage("Bot", $"Welcome, {_bot.User.Name}! I'm a Cybersecurity Awareness Bot. You can ask me about password safety, phishing, safe browsing, "
-                    +"public wifi, online scams, links in emails and app permissions.",(Brush)FindResource("AccentGreen"));
+                    +"public wifi, privacy, online scams, links in emails and app permissions.",(Brush)FindResource("AccentGreen"));
 
                 InputBox.Clear();
                 InputBox.Focus();

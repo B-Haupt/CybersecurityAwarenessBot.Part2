@@ -33,9 +33,42 @@
             {
                 return $"Stay safe out there, {User.Name}! You asked {User.QuestionsAsked} question(s) today.";
             }
+            // Increase question counter
             User.QuestionsAsked++;
-            return _botResponses.GetResponseMatch(input);
+
+            // The user is telling the chatbot which topic interest them, so store it and answer with a top straight away.
+            if (input.Contains("interested in") || input.Contains("favourite topic"))
+            {
+                string? topic = _botResponses.FindTopic(input);
+
+                if (topic != null)
+                {
+                    User.FavouriteTopic = topic;
+                    User.CurrentTopic = topic;
+
+                    return $"Great, I'll remember that you're interested in {topic}, {User.Name}. It's an important part of staying safe online.\n\n{_botResponses.GetResponseMatch(input)}";
+
+                }
+            }
+
+            // Record which topic is being discussed so follow up questions are in line with it
+            string? matched = _botResponses.FindTopic(input);
+            User.CurrentTopic = matched;
+
+            string reply = _botResponses.GetResponseMatch(input);
+
+            // Every third question, refer back to the topic the user said they care about.
+            if (User.FavouriteTopic != null && matched != null && matched != User.FavouriteTopic && User.QuestionsAsked % 3 == 0) {
+                reply += $"\n\nBy the way {User.Name}, as someone interested in {User.FavouriteTopic}, it's worth reviewing your {User.FavouriteTopic} habits regularly too.";
+            }
+
+            return reply ;
+        }
+
+
+
+           
         }
 
     }
-}
+

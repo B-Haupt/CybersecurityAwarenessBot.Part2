@@ -6,7 +6,7 @@
     internal class UserProfile
     {
         /// <summary>
-        /// The user name, which is used in the welcome message, as the input prompt and in the goodbye. It is initialized to an empty string so that it is never null.
+        /// The user name, which is used in the welcome message. It is initialized to an empty string so that it is never null.
         /// </summary>
         public string Name { get; set; } = string.Empty;
 
@@ -14,5 +14,16 @@
         /// This is a counter to keep track of how many questions the user asks the chatbot and show the user in the goodbye message. By default it is set to 0.
         /// </summary>
         public int QuestionsAsked { get; set; }
+
+        /// <summary>
+        /// A topic the user said they are particularly interested in. Used to reference back to later.
+        /// </summary>
+        public string? FavouriteTopic { get; set; }
+
+
+        /// <summary>
+        /// The topic that has recently been discussed.
+        /// </summary>
+        public string? CurrentTopic { get; set; }
     }
 }
