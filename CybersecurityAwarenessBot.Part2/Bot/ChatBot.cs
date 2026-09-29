@@ -1,4 +1,6 @@
-﻿namespace CybersecurityAwarenessBot.Bot
+﻿using CybersecurityAwarenessBot.Part2.Bot;
+
+namespace CybersecurityAwarenessBot.Bot
 {
     /// <summary>
     /// The chatbot logic. This class takes the user's input and normalizes it and returns a reply. No interface code here.
@@ -8,6 +10,7 @@
 
         private readonly InputValidator _validator = new();
         private readonly BotResponses _botResponses = new();
+        private readonly SentimentAnalyser _sentiment = new();
 
         /// <summary>
         /// The user's details, it is public so that the window can read the name for message labels and set it when the user first enters it.
@@ -56,6 +59,19 @@
             User.CurrentTopic = matched;
 
             string reply = _botResponses.GetResponseMatch(input);
+
+            string? feeling = _sentiment.Detect(input, User.Name, matched);
+            if (feeling != null) {
+
+                // No topic was mentioned then just give feeling reply and ask about topic
+                if (matched == null)
+                {
+                    return $"It's completely normal to feel that way, {User.Name}. What's on your mind? I can help with passwords, phishing, " +
+                           "safe browsing, privacy, public Wi-Fi, scams, links or app permissions.";
+                }
+
+                reply = feeling + "\n\n" + reply;
+            }
 
             // Every third question, refer back to the topic the user said they care about.
             if (User.FavouriteTopic != null && matched != null && matched != User.FavouriteTopic && User.QuestionsAsked % 3 == 0) {
