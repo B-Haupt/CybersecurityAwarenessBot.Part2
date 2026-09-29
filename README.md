@@ -98,9 +98,10 @@ The workflow is set up in GitHub so that every push triggers it. The workflow ch
 ## Releases
 
 | Version | What it added |
-| v2.0    | WPF project set up, Part 1 classes ported, window layout built |
-| v2.1    | Random response cycling, name capture, farewell message |
-| v2.2    | Memory, sentiment detection, conversation flow and GUI polish |
+|---------|---------------|
+| v2.0 | WPF project set up, Part 1 classes ported, window layout built |
+| v2.1 | Random response cycling, name capture, farewell message |
+| v2.2 | Memory, sentiment detection, conversation flow and GUI polish |
 
 
 
