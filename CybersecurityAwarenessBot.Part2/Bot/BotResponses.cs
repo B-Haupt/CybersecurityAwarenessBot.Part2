@@ -15,7 +15,7 @@
             // Key = keyword, Value = list of possible responses
             ["how are you"] = new List<string> { "I am good. Thank you for asking." },
             ["your purpose"] = new List<string> { "My purpose is to provide you with safety tips to help you navigate the dangers online." },
-            ["what can i ask"] = new List<string> { "You can ask me about password, phishing and browsing." + "\nI can also offer tips about public wifi, online scams, privacy, links in emails and app permissions." },
+            ["what can i ask"] = new List<string> { "You can ask me about password, phishing and browsing. I can also offer tips about public wifi, online scams, privacy, links in emails and app permissions." },
             ["password"] = new List<string> {
                 "Use a unique, long passphrase for every account and protect them all with multi-factor authentication (MFA).",
                 "Never reuse a password across multiple accounts; if one site suffers a data breach, your other logins remain safe.",
