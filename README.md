@@ -1,4 +1,4 @@
-?# Cybersecurity Awareness Bot - Part 2
+# Cybersecurity Awareness Bot - Part 2
 
 This is a C# WPF application built for my POE assignment for Programming 2A. It is a chatbot that shares safety tips with users about how to stay safe online.
 
@@ -11,23 +11,27 @@ Part 2 takes the console application from Part 1 and rebuilds it as a Windows de
 ## Project Structure
 ```
 CybersecurityAwarenessBot.Part2/
-??? CybersecurityAwarenessBot.Part2.sln
-??? .github/workflows/
-? ??? dotnet-ci.yml 					# GitHub Actions CI build workflow
-??? CybersecurityAwarenessBot.Part2/
-??? App.xaml 							# Colour palette, button and scrollbar styles
-??? MainWindow.xaml 					# Window layout
-??? MainWindow.xaml.cs 				    # Displays messages and passes input to the bot
-??? Bot/
-? ??? ChatBot.cs						# Decides how the chatbot replies
-? ??? BotResponses.cs 					# Keyword to tip lookup with random selection
-? ??? SentimentAnalyser.cs 			    # Detects emotion using a delegate
-? ??? InputValidator.cs 				# Validates and normalises user input
-? ??? UserProfile.cs 					# Stores the user's name and interests
-? ??? LogoArt.cs 						# Supplies the ASCII art logo
-? ??? GreetingPlayer.cs	 			    # Plays the WAV voice greeting
-??? Media/
-??? Bot.wav 							# Recorded voice greeting
+|
+|-- CybersecurityAwarenessBot.Part2.sln
+|-- .github/workflows/
+|   `-- dotnet-ci.yml                 # GitHub Actions CI build workflow
+|
+`-- CybersecurityAwarenessBot.Part2/
+    |-- App.xaml                      # Colour palette, button and scrollbar styles
+    |-- MainWindow.xaml               # Window layout
+    |-- MainWindow.xaml.cs            # Displays messages and passes input to the bot
+    |
+    |-- Bot/
+    |   |-- ChatBot.cs                # Decides how the chatbot replies
+    |   |-- BotResponses.cs           # Keyword to tip lookup with random selection
+    |   |-- SentimentAnalyser.cs      # Detects emotion using a delegate
+    |   |-- InputValidator.cs         # Validates and normalises user input
+    |   |-- UserProfile.cs            # Stores the user's name and interests
+    |   |-- LogoArt.cs                # Supplies the ASCII art logo
+    |   `-- GreetingPlayer.cs         # Plays the WAV voice greeting
+    |
+    `-- Media/
+        `-- Bot.wav                   # Recorded voice greeting
 ```
 
 
