@@ -2,13 +2,16 @@
 
 This is a C# WPF application built for my POE assignment for Programming 2A. It is a chatbot that shares safety tips with users about how to stay safe online.
 
-Part 2 takes the console application from Part 1 and rebuilds it as a Windows desktop application with a graphical user interface. The chatbot has now being upgraded to recognises cybersecurity keywords, gives a different tip each time you ask, remembers what you are interested in, detects how you are feeling, and can continue a topic when you ask follow-up questions.
+Part 2 takes the console application from Part 1 and rebuilds it as a Windows desktop application with a graphical user interface. The chatbot has now been upgraded to recognise cybersecurity keywords, give a different tip each time you ask, remember what you are interested in, detect how you are feeling, and continue a topic when you ask follow-up questions.
+
+## Student
 
 - **Name:** Brittany Haupt
 - **Student number:** ST10500773
 - **Module:** PROG6221 Programming 2A
 
 ## Project Structure
+
 ```
 CybersecurityAwarenessBot.Part2/
 |
@@ -30,21 +33,25 @@ CybersecurityAwarenessBot.Part2/
     |   |-- LogoArt.cs                # Supplies the ASCII art logo
     |   `-- GreetingPlayer.cs         # Plays the WAV voice greeting
     |
-    `-- Media/
-        `-- Bot.wav                   # Recorded voice greeting
+    |-- Media/
+    |   `-- Bot.wav                   # Recorded voice greeting
+    |
+    `-- Pictures/                     # Screenshots used in this README
 ```
-
 
 ## Features of Project (Part 2)
 
-- **Graphical interface** : This is a WPF window with an ACSII art header, which has a title of the program with a shield next to it. There is also a scrollable chat area and it has an input box for the user to type it input.
-- *Voice greeting**: The program starts with the WAV file running, which greets the user. It uses `System.Media.SoundPlayer` to play the voice greeting.
-- **ASCII art title**: The title is displayed and showing in colour with a shield next to it. The art title is only displayed after the voice greeting has run.
-- **Asks the user for their name**: The program starts and asks the user for their name and then calls them that through the conversation with the user.
-- **Keyword response system**: The bot answers questions on passwords, phishing, safe browsing, public wifi, online scams, links in emails and app permissions. You can also ask it how it is and what it's purpose is.
-- **Input validation**: The program deals with the user entering whitespace or nothing at all, without the whole program crashing.
-- **Formatted console interface**: the interface is easy to read because of the colours, section headers and dividers, and the slow typing response from the chatbot makes it feel like you are really talking to a computer.
-- **Modular structure**: the logic is split into multiple classes to handle everything without overloading all the code into `Program.cs`.
+- **Graphical interface**: A WPF window with an ASCII art header, a scrollable chat area and an input box. Messages appear as rounded bubbles, with the user's aligned to the right and the chatbot's to the left, so the two speakers are easy to tell apart.
+- **Voice greeting**: The program starts by playing a recorded WAV file that greets the user. It uses `System.Media.SoundPlayer`, which is why the project targets `net8.0-windows`.
+- **ASCII art title**: The title is displayed in colour with a shield next to it, shown after the voice greeting has finished playing.
+- **Asks the user for their name**: The chatbot asks for the user's name at the start and then uses it throughout the conversation, including as the label on their messages.
+- **Keyword recognition**: The chatbot recognises eleven topics, covering password safety, phishing, safe browsing, public Wi-Fi, privacy, online scams, links in emails and app permissions, as well as general questions about the bot itself.
+- **Random responses**: Each topic holds several tips. The chatbot works through every tip for a topic before repeating any of them, so the conversation stays varied rather than returning the same line each time.
+- **Memory and recall**: If the user says they are interested in a topic, the chatbot stores it and refers back to it later in the conversation to make its tips feel more personal.
+- **Sentiment detection**: The chatbot detects when the user sounds worried, frustrated or curious, and adds a supportive message before the cybersecurity tip. This is built using a delegate, so each sentiment's reply is stored as a method in a collection.
+- **Conversation flow**: Saying "tell me more" or "what else" continues the topic already being discussed instead of starting over. If the user names a new topic in the same message, that topic takes priority.
+- **Input validation**: Blank and whitespace-only input is handled without the program crashing, and unrecognised questions receive a default response listing the available topics.
+- **Modular structure**: The logic is split across eight classes. All the chatbot logic lives in the `Bot` folder and contains no interface code, which means the window is only responsible for displaying messages and reading input.
 
 ## Requirements
 
@@ -59,41 +66,44 @@ CybersecurityAwarenessBot.Part2/
 
 ## Topics
 
-The program covers the following topics:
+The chatbot can give tips on the following topics:
+
 1. Password safety
 2. Phishing
 3. Safe browsing
-4. Public wifi
+4. Public Wi-Fi
 5. Privacy
 6. Online scams
 7. Links in emails
 8. App permissions
 
-General Questions Covered
+It also answers these general questions:
+
 1. "How are you?"
 2. "What is your purpose?"
 3. "What can I ask you about?"
 
+You can say "tell me more", "what else" or "another tip" at any point to hear another tip on the topic you are already discussing.
 
-## Example of a conversation with the chatbot:
+## Example of a Conversation with the Chatbot
 
-![Example conversation](CybersecurityAwarenessBot.Part2/Pictures/Conversation1.png)
+![Chatbot greeting and name capture](CybersecurityAwarenessBot.Part2/Pictures/Conversation1.png)
 
-![Example conversation](CybersecurityAwarenessBot.Part2/Pictures/Conversation2.png)
+![Keyword recognition and random responses](CybersecurityAwarenessBot.Part2/Pictures/Conversation2.png)
 
-![Example conversation](CybersecurityAwarenessBot.Part2/Pictures/Conversation3.png)
+![Follow-up questions continuing a topic](CybersecurityAwarenessBot.Part2/Pictures/Conversation3.png)
 
-![Example conversation](CybersecurityAwarenessBot.Part2/Pictures/Conversation4.png)
+![Memory of the user's favourite topic](CybersecurityAwarenessBot.Part2/Pictures/Conversation4.png)
 
-![Example conversation](CybersecurityAwarenessBot.Part2/Pictures/Conversation5.png)
+![Sentiment detection](CybersecurityAwarenessBot.Part2/Pictures/Conversation5.png)
 
-![Example conversation](CybersecurityAwarenessBot.Part2/Pictures/Conversation6.png)
+![Input validation and the farewell message](CybersecurityAwarenessBot.Part2/Pictures/Conversation6.png)
 
 ## Continuous Integration
 
-The workflow is set up in GitHub so that every push triggers it. The workflow checks out the code, installs the .NET 8 SDK, restores dependencies and builds the solution in Release configuration.
+The workflow is set up in GitHub so that every push triggers it. The workflow checks out the code, installs the .NET 8 SDK, restores dependencies and builds the solution in Release configuration. A Windows runner is used because the project targets `net8.0-windows`.
 
-![Example conversation](CybersecurityAwarenessBot.Part2/Pictures/CIWorkflow.png)
+![Successful CI workflow runs](CybersecurityAwarenessBot.Part2/Pictures/CIWorkflow.png)
 
 ## Releases
 
@@ -103,9 +113,6 @@ The workflow is set up in GitHub so that every push triggers it. The workflow ch
 | v2.1 | Random response cycling, name capture, farewell message |
 | v2.2 | Memory, sentiment detection, conversation flow and GUI polish |
 
-
-
 ## Video Presentation
 
 YouTube link: 
-
