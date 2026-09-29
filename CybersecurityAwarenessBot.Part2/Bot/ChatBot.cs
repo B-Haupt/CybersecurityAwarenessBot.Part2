@@ -22,7 +22,7 @@ namespace CybersecurityAwarenessBot.Bot
         private static readonly string[] ExitInput = { "exit", "quit", "bye", "end", "good bye", "goodbye" };
 
         /// <summary>
-        /// Words/phrases that prompts the chatbot to continue with the topic already being spoken about
+        /// Words/phrases that prompt the chatbot to continue with the topic already being spoken about
         /// </summary>
         private static readonly string[] FollowUpPhrases = { "tell me more", "another tip", "more tips", "explain more", "go on", "what else", "more info", "tell me another", "anything else" };
 
@@ -36,6 +36,8 @@ namespace CybersecurityAwarenessBot.Bot
 
             string input = _validator.NormaliseInput(userInput);
 
+            string? matched = _botResponses.FindTopic(input);
+
             // A farewell is answered with a closing message rather than a tip. The window stays open so the user can carry on if they want to.
             if (ExitInput.Contains(input))
             {
@@ -43,7 +45,7 @@ namespace CybersecurityAwarenessBot.Bot
             }
 
             // A follow-up question carries on with whatever topic was last spoken about
-            if (FollowUpPhrases.Any(phrase => input.Contains(phrase)) && _botResponses.FindTopic(input) == null)
+            if (FollowUpPhrases.Any(phrase => input.Contains(phrase)) && matched == null)
             {
                 User.QuestionsAsked++;
 
@@ -56,29 +58,22 @@ namespace CybersecurityAwarenessBot.Bot
                        "public Wi-Fi, scams, links in emails or app permissions.";
             }
 
-
-
-
             // Increase question counter
             User.QuestionsAsked++;
 
             // The user is telling the chatbot which topic interests them, so store it and answer with a tip straight away.
             if (input.Contains("interested in") || input.Contains("favourite topic"))
             {
-                string? topic = _botResponses.FindTopic(input);
-
-                if (topic != null)
+                if (matched != null)
                 {
-                    User.FavouriteTopic = topic;
-                    User.CurrentTopic = topic;
+                    User.FavouriteTopic = matched;
+                    User.CurrentTopic = matched;
 
-                    return $"Great, I'll remember that you're interested in {topic}, {User.Name}. It's an important part of staying safe online.\n\n{_botResponses.GetResponseMatch(input)}";
-
+                    return $"Great, I'll remember that you're interested in {matched}, {User.Name}. It's an important part of staying safe online.\n\n{_botResponses.GetResponseMatch(input)}";
                 }
             }
 
             // Record which topic is being discussed so follow up questions are in line with it
-            string? matched = _botResponses.FindTopic(input);
             User.CurrentTopic = matched;
 
             string reply = _botResponses.GetResponseMatch(input);
@@ -86,14 +81,12 @@ namespace CybersecurityAwarenessBot.Bot
             string? feeling = _sentiment.Detect(input, User.Name, matched);
             if (feeling != null)
             {
-
                 // No topic was mentioned then just give feeling reply and ask about topic
                 if (matched == null)
                 {
                     return $"It's completely normal to feel that way, {User.Name}. What's on your mind? I can help with passwords, phishing, " +
                            "safe browsing, privacy, public Wi-Fi, scams, links or app permissions.";
                 }
-
                 reply = feeling + "\n\n" + reply;
             }
 
@@ -102,7 +95,6 @@ namespace CybersecurityAwarenessBot.Bot
             {
                 reply += $"\n\nBy the way {User.Name}, as someone interested in {User.FavouriteTopic}, it's worth reviewing your {User.FavouriteTopic} habits regularly too.";
             }
-
             return reply;
         }
     }

@@ -21,7 +21,7 @@
         <Border Grid.Row="0" Background="{StaticResource BgPanel}"
             CornerRadius="10" Padding="10" Margin="0,0,0,10">
             <TextBlock x:Name="AsciiHeader"
-                   FontFamily="Consolas" FontSize="10"
+                   FontFamily="Consolas" FontSize="12"
                    Foreground="{StaticResource AccentGreen}"
                    HorizontalAlignment="Center"/>
         </Border>
@@ -43,17 +43,15 @@
 
             <TextBox x:Name="InputBox" Grid.Column="0"
                  FontSize="14" Padding="10"
+                 BorderThickness="0"
                  Background="{StaticResource BgPanel}"
                  Foreground="{StaticResource TextLight}"
                  CaretBrush="{StaticResource AccentGreen}"
                  KeyDown="InputBox_KeyDown"/>
 
             <Button x:Name="SendButton" Grid.Column="1" Content="Send"
-                Margin="10,0,0,0" Padding="24,10"
-                FontSize="14" FontWeight="Bold"
-                Background="{StaticResource AccentGreen}"
-                Foreground="#0D1B2A" BorderThickness="0"
-                Cursor="Hand"
+                Margin="10,0,0,0" 
+                Style="{StaticResource SendButtonStyle}"
                 Click="SendButton_Click"/>
         </Grid>
     </Grid>

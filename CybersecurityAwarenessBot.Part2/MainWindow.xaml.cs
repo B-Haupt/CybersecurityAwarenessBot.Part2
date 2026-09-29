@@ -31,21 +31,45 @@ namespace CybersecurityAwarenessBot.Part2
         }
 
         /// <summary>
-        /// Function is to add a message bubble to the chat panel and scrolls to the bottom
+        /// Function is to add a rounded message bubble to the chat panel and scrolls to the bottom. User message is aligned to the right in accent colour and the chatbot is on the left.
         /// </summary>
         /// <param name="sender">Who is speaking, used as a label</param>
         /// <param name="message">The text to display.</param>
-        /// <param name="colour">The colour of the text.</param>
-        private void AddMessage(string sender, string message, Brush colour)
+        /// <param name="isUser">True for user's messages and false for chatbot</param>
+        private void AddMessage(string sender, string message, bool isUser)
         {
-            var bubble = new TextBlock { 
-                Text = $"{sender}: {message}",
-                Foreground= colour,
-                TextWrapping= TextWrapping.Wrap,
-                Margin = new Thickness(0,0,0,10),
-                FontSize= 14
+            var senderLabel = new TextBlock
+            {
+                Text = sender,
+                FontWeight = FontWeights.Bold,
+                FontSize = 11,
+                Margin = new Thickness(0, 0, 0, 4),
+                Foreground = isUser ? (Brush)FindResource("BgDark") : (Brush)FindResource("AccentGreen")
             };
 
+            var messageText = new TextBlock
+            {
+                Text = message,
+                TextWrapping = TextWrapping.Wrap,
+                FontSize = 14,
+                Foreground = isUser ? (Brush)FindResource("BgDark") : (Brush)FindResource("TextLight")
+            };
+
+            var content = new StackPanel();
+            content.Children.Add(senderLabel);
+            content.Children.Add(messageText);
+
+            var bubble = new Border
+            {
+                Child = content,
+                Background = isUser ? (Brush)FindResource("AccentGreen") : (Brush)FindResource("BgDark"),
+                CornerRadius = new CornerRadius(12),
+                Padding = new Thickness(12, 8, 12, 8),
+                Margin = new Thickness(0, 0, 0, 10),
+                MaxWidth = 560,
+                HorizontalAlignment = isUser ? HorizontalAlignment.Right
+                                             : HorizontalAlignment.Left
+            };
             ChatPanel.Children.Add(bubble);
             ChatScroll.ScrollToEnd();
         }
@@ -62,12 +86,13 @@ namespace CybersecurityAwarenessBot.Part2
 
             // Play the voice greeting and report it in the chat if it doesn't play
             string? error = _greeting.PlayGreeting();
-            if (error != null) {
-                AddMessage("Bot", error, (Brush)FindResource("AccentGreen"));
+            if (error != null)
+            {
+                AddMessage("Bot", error, false);
             }
 
 
-            AddMessage("Bot", "Hello! Welcome to the Cybersecurity Awareness Bot. What is your name?",(Brush)FindResource("AccentGreen"));
+            AddMessage("Bot", "Hello! Welcome to the Cybersecurity Awareness Bot. What is your name?", false);
 
             InputBox.Focus();
 
@@ -80,7 +105,8 @@ namespace CybersecurityAwarenessBot.Part2
         /// </summary>
         /// <param name="sender">The button raising the event.</param>
         /// <param name="e">Event data</param>
-        private void SendButton_Click(object sender, RoutedEventArgs e) {
+        private void SendButton_Click(object sender, RoutedEventArgs e)
+        {
             SendMessage();
         }
 
@@ -89,8 +115,9 @@ namespace CybersecurityAwarenessBot.Part2
         /// </summary>
         /// <param name="sender">Text box raising the event</param>
         /// <param name="e">Event data used to check which key was pressed</param>
-        private void InputBox_KeyDown(object sender, KeyEventArgs e) {
-            if (e.Key == Key.Enter) 
+        private void InputBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
             {
                 SendMessage();
             }
@@ -99,24 +126,26 @@ namespace CybersecurityAwarenessBot.Part2
         /// <summary>
         /// Function that checks if user has enter something - if blank/white space then it returns. Shows the user and bots responses.
         /// </summary>
-        private void SendMessage() {
+        private void SendMessage()
+        {
 
             string userInput = InputBox.Text;
 
             // Checks if input is blank and returns if it is
-            if (!_validator.IsValidInput(userInput)) {
+            if (!_validator.IsValidInput(userInput))
+            {
                 return;
             }
 
-            if (_awaitingName) 
+            if (_awaitingName)
             {
                 _bot.User.Name = userInput.Trim();
                 _awaitingName = false;
 
-                AddMessage("You", userInput, (Brush)FindResource("TextLight"));
+                AddMessage("You", userInput, true);
 
                 AddMessage("Bot", $"Welcome, {_bot.User.Name}! I'm a Cybersecurity Awareness Bot. You can ask me about password safety, phishing, safe browsing, "
-                    +"public wifi, privacy, online scams, links in emails and app permissions.",(Brush)FindResource("AccentGreen"));
+                    + "public wifi, privacy, online scams, links in emails and app permissions. You can also say 'tell me more' for another tip on the same topic.", false);
 
                 InputBox.Clear();
                 InputBox.Focus();
@@ -124,12 +153,12 @@ namespace CybersecurityAwarenessBot.Part2
             }
 
             string label = string.IsNullOrWhiteSpace(_bot.User.Name) ? "You" : _bot.User.Name;
-            AddMessage(label, userInput, (Brush)FindResource("TextLight"));
+            AddMessage(label, userInput, true);
 
-            AddMessage("Bot", _bot.GetReply(userInput), (Brush)FindResource("AccentGreen"));
+            AddMessage("Bot", _bot.GetReply(userInput), false);
 
             InputBox.Clear();
-            InputBox.Focus();  
+            InputBox.Focus();
         }
     }
 }
