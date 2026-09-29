@@ -1,9 +1,8 @@
-﻿using CybersecurityAwarenessBot.Part2.Bot;
-
+﻿
 namespace CybersecurityAwarenessBot.Bot
 {
     /// <summary>
-    /// The chatbot logic. This class takes the user's input and normalizes it and returns a reply. No interface code here.
+    /// The chatbot logic. This class takes the user's input and normalises it and returns a reply. No interface code here.
     /// </summary>
     internal class ChatBot
     {
@@ -23,12 +22,18 @@ namespace CybersecurityAwarenessBot.Bot
         private static readonly string[] ExitInput = { "exit", "quit", "bye", "end", "good bye", "goodbye" };
 
         /// <summary>
+        /// Words/phrases that prompts the chatbot to continue with the topic already being spoken about
+        /// </summary>
+        private static readonly string[] FollowUpPhrases = { "tell me more", "another tip", "more tips", "explain more", "go on", "what else", "more info", "tell me another", "anything else" };
+
+        /// <summary>
         /// Takes in the user input and then returns the bot's reply.
         /// </summary>
         /// <param name="userInput">Raw text the user entered</param>
         /// <returns>Chatbot reply that is ready to be displayed in the chat</returns>
-        public string GetReply(string userInput) { 
-            
+        public string GetReply(string userInput)
+        {
+
             string input = _validator.NormaliseInput(userInput);
 
             // A farewell is answered with a closing message rather than a tip. The window stays open so the user can carry on if they want to.
@@ -36,10 +41,28 @@ namespace CybersecurityAwarenessBot.Bot
             {
                 return $"Stay safe out there, {User.Name}! You asked {User.QuestionsAsked} question(s) today.";
             }
+
+            // A follow-up question carries on with whatever topic was last spoken about
+            if (FollowUpPhrases.Any(phrase => input.Contains(phrase)) && _botResponses.FindTopic(input) == null)
+            {
+                User.QuestionsAsked++;
+
+                if (User.CurrentTopic != null)
+                {
+                    return _botResponses.GetResponseMatch(User.CurrentTopic);
+                }
+
+                return $"Happy to say more, {User.Name}, but which topic would you like? You can ask me about passwords, phishing, safe browsing, privacy, " +
+                       "public Wi-Fi, scams, links in emails or app permissions.";
+            }
+
+
+
+
             // Increase question counter
             User.QuestionsAsked++;
 
-            // The user is telling the chatbot which topic interest them, so store it and answer with a top straight away.
+            // The user is telling the chatbot which topic interests them, so store it and answer with a tip straight away.
             if (input.Contains("interested in") || input.Contains("favourite topic"))
             {
                 string? topic = _botResponses.FindTopic(input);
@@ -61,7 +84,8 @@ namespace CybersecurityAwarenessBot.Bot
             string reply = _botResponses.GetResponseMatch(input);
 
             string? feeling = _sentiment.Detect(input, User.Name, matched);
-            if (feeling != null) {
+            if (feeling != null)
+            {
 
                 // No topic was mentioned then just give feeling reply and ask about topic
                 if (matched == null)
@@ -74,17 +98,13 @@ namespace CybersecurityAwarenessBot.Bot
             }
 
             // Every third question, refer back to the topic the user said they care about.
-            if (User.FavouriteTopic != null && matched != null && matched != User.FavouriteTopic && User.QuestionsAsked % 3 == 0) {
+            if (User.FavouriteTopic != null && matched != null && matched != User.FavouriteTopic && User.QuestionsAsked % 3 == 0)
+            {
                 reply += $"\n\nBy the way {User.Name}, as someone interested in {User.FavouriteTopic}, it's worth reviewing your {User.FavouriteTopic} habits regularly too.";
             }
 
-            return reply ;
+            return reply;
         }
-
-
-
-           
-        }
-
     }
+}
 

@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace CybersecurityAwarenessBot.Part2.Bot
+namespace CybersecurityAwarenessBot.Bot
 {
     /// <summary>
     /// Class is used to detect the emotion in the user's message and build a supportive rely to go with the cybersecurity tip. A delegate is used so that each sentiment's reply is
@@ -18,7 +14,7 @@ namespace CybersecurityAwarenessBot.Part2.Bot
         /// </summary>
         /// <param name="name">User's name</param>
         /// <param name="topic">Topic being discussed</param>
-        /// <returns></returns>
+        /// <returns>Text to place before the cybersecurity tip</returns>
         public delegate string SentimentResponse(string name, string topic);
 
 
@@ -79,10 +75,10 @@ namespace CybersecurityAwarenessBot.Part2.Bot
         }
 
         /// <summary>
-        /// Method to capitalize the first letter of a word
+        /// Method to capitalise the first letter of a word
         /// </summary>
-        /// <param name="word">Word that need to be capitalized</param>
-        /// <returns>Capitalized word</returns>
+        /// <param name="word">Word that need to be capitalised</param>
+        /// <returns>Capitalised word</returns>
         private static string Capitalise(string word) {
 
             if (string.IsNullOrEmpty(word)) {
