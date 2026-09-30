@@ -118,6 +118,21 @@ namespace CybersecurityAwarenessBot.Bot
         };
 
         /// <summary>
+        /// A personalised tip for each topic, used when the chatbot refers back to the user's favourite topic.
+        /// </summary>
+        private readonly Dictionary<string, string> _recallTips = new()
+        {
+            ["password"] = "you might want to check whether any of your accounts still share the same password.",
+            ["phishing"] = "remember to double-check the sender of any email that asks you to act quickly.",
+            ["browsing"] = "it's worth checking which browser extensions you have installed and removing any you don't use.",
+            ["wifi"] = "try switching off automatic Wi-Fi connections on your phone.",
+            ["scam"] = "remember that no real bank will ever ask you for your OTP or PIN.",
+            ["link"] = "get into the habit of hovering over links before you click them.",
+            ["permission"] = "it's a good time to review which apps can access your location.",
+            ["privacy"] = "you might want to review the security settings on your social media accounts."
+        };
+
+        /// <summary>
         /// Converts a topic key into its readable name.
         /// </summary>
         /// <param name="key">The topic keyword.</param>
@@ -125,6 +140,14 @@ namespace CybersecurityAwarenessBot.Bot
         public string GetDisplayName(string key)
         {
             return _displayNames.TryGetValue(key, out string? name) ? name : key;
+        }
+
+        /// <summary>
+        /// Returns the personalised recall tip for a topic.
+        /// </summary>
+        public string GetRecallTip(string topic)
+        {
+            return _recallTips.TryGetValue(topic, out string? tip) ? tip : "it's worth reviewing your habits regularly.";
         }
 
         /// <summary>

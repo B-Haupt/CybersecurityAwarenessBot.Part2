@@ -68,6 +68,7 @@ namespace CybersecurityAwarenessBot.Bot
                 {
                     User.FavouriteTopic = matched;
                     User.CurrentTopic = matched;
+                    User.LastRecallAt = null;
 
                     return $"Great, I'll remember that you're interested in {_botResponses.GetDisplayName(matched)}, {User.Name}. It's an important part of staying safe online.\n\n{_botResponses.GetResponseMatch(input)}";
                 }
@@ -102,12 +103,30 @@ namespace CybersecurityAwarenessBot.Bot
                 reply = feeling + "\n\n" + reply;
             }
 
-            // Every third question, refer back to the topic the user said they care about.
-            if (User.FavouriteTopic != null && matched != null && matched != User.FavouriteTopic && User.QuestionsAsked % 3 == 0)
+            return reply + GetRecall(matched);
+        }
+
+        /// <summary>
+        /// Refers back to the user's favourite topic the first time they ask about a different topic, then at most once every three questions so it doesn't repeat on every message.
+        /// </summary>
+        /// <param name="matched">The topic in the current message or null if no topic is chosen</param>
+        /// <returns>The recall line to add to the end of the reply, or an empty string if no recall is needed</returns>        
+        private string GetRecall(string? matched)
+        {
+            if (User.FavouriteTopic == null || matched == null || matched == User.FavouriteTopic)
             {
-                reply += $"\n\nBy the way {User.Name}, as someone interested in {_botResponses.GetDisplayName(User.FavouriteTopic)}, it's worth reviewing your {_botResponses.GetDisplayName(User.FavouriteTopic)} habits regularly too.";
+                return "";
             }
-            return reply;
+
+            if (User.LastRecallAt != null && User.QuestionsAsked - User.LastRecallAt < 3)
+            {
+                return "";
+            }
+
+            User.LastRecallAt = User.QuestionsAsked;
+
+            return $"\n\nBy the way {User.Name}, as someone interested in {_botResponses.GetDisplayName(User.FavouriteTopic)}, "
+                + _botResponses.GetRecallTip(User.FavouriteTopic);
         }
     }
 }

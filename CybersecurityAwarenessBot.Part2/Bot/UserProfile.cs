@@ -25,5 +25,10 @@
         /// The topic that has recently been discussed.
         /// </summary>
         public string? CurrentTopic { get; set; }
+
+        /// <summary>
+        /// The question number when the favourite topic was last recalled, or null if it hasn't been recalled since the user set it.
+        /// </summary>
+        public int? LastRecallAt { get; set; }
     }
 }
