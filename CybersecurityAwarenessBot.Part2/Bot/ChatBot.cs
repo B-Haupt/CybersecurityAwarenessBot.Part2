@@ -69,31 +69,43 @@ namespace CybersecurityAwarenessBot.Bot
                     User.FavouriteTopic = matched;
                     User.CurrentTopic = matched;
 
-                    return $"Great, I'll remember that you're interested in {matched}, {User.Name}. It's an important part of staying safe online.\n\n{_botResponses.GetResponseMatch(input)}";
+                    return $"Great, I'll remember that you're interested in {_botResponses.GetDisplayName(matched)}, {User.Name}. It's an important part of staying safe online.\n\n{_botResponses.GetResponseMatch(input)}";
                 }
             }
 
-            // Record which topic is being discussed so follow up questions are in line with it
-            User.CurrentTopic = matched;
+            // Only updates when a topic is actually found
+            if (matched != null) 
+            {
+                User.CurrentTopic = matched;
+            }
 
             string reply = _botResponses.GetResponseMatch(input);
 
-            string? feeling = _sentiment.Detect(input, User.Name, matched);
+            string? topicForFeeling = matched ?? User.CurrentTopic;
+            string? feeling = _sentiment.Detect(input, User.Name, topicForFeeling == null ? null : _botResponses.GetDisplayName(topicForFeeling));
+
             if (feeling != null)
             {
-                // No topic was mentioned then just give feeling reply and ask about topic
                 if (matched == null)
                 {
-                    return $"It's completely normal to feel that way, {User.Name}. What's on your mind? I can help with passwords, phishing, " +
-                           "safe browsing, privacy, public Wi-Fi, scams, links or app permissions.";
+                    // The brief asks that confusion continues the current topic
+                    if (User.CurrentTopic != null)
+                    {
+                        return feeling + "\n\n" + _botResponses.GetResponseMatch(User.CurrentTopic);
+                    }
+
+                    // Nothing discussed yet
+                    return feeling + "\n\nWhat's on your mind? I can help with passwords, phishing, " +
+                           "safe browsing, privacy, public Wi-Fi, scams, links in emails or app permissions.";
                 }
+
                 reply = feeling + "\n\n" + reply;
             }
 
             // Every third question, refer back to the topic the user said they care about.
             if (User.FavouriteTopic != null && matched != null && matched != User.FavouriteTopic && User.QuestionsAsked % 3 == 0)
             {
-                reply += $"\n\nBy the way {User.Name}, as someone interested in {User.FavouriteTopic}, it's worth reviewing your {User.FavouriteTopic} habits regularly too.";
+                reply += $"\n\nBy the way {User.Name}, as someone interested in {_botResponses.GetDisplayName(User.FavouriteTopic)}, it's worth reviewing your {_botResponses.GetDisplayName(User.FavouriteTopic)} habits regularly too.";
             }
             return reply;
         }

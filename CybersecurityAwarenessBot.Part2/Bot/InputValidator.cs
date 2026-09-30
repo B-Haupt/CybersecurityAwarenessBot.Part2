@@ -18,13 +18,17 @@
 
         /// <summary>
         /// Trims the extra space and then puts it to lowercase. This is done for the response lookup so that if the user types a word in all caps it would still match
-        /// the response list. Also used replace to replace the word wi-fi with wifi if the user typed it in.
+        /// the response list. Also used replace to replace the word wi-fi with wifi if the user typed it in. Plus remove punctuation characters.
         /// </summary>
         /// <param name="input">User input.</param>
         /// <returns>The trimmed, lowercase version of the input.</returns>
         public string NormaliseInput(string input)
         {
-            return input.Trim().ToLower().Replace("wi-fi", "wifi");
+            return input.Trim()
+            .ToLower()
+            .TrimEnd('.', '!', '?', ',')
+            .Replace("wi-fi", "wifi")
+            .Replace("wi fi", "wifi");
         }
 
     }

@@ -1,4 +1,6 @@
-﻿namespace CybersecurityAwarenessBot.Bot
+﻿using System.Text.RegularExpressions;
+
+namespace CybersecurityAwarenessBot.Bot
 {
     /// <summary>
     /// Stores the chatbot's predefined responses and matches the user's input against them. A dictionary of lists is used so each topic can hold several tips, and
@@ -7,15 +9,21 @@
     internal class BotResponses
     {
         /// <summary>
+        /// General questions about the chatbot itself. Kept separate from the cybersecurity topics so they never become the "current topic" that follow-up questions continue.
+        /// </summary>
+        private readonly Dictionary<string, string> _general = new()
+        {
+            ["how are you"] = "I am good. Thank you for asking.",
+            ["your purpose"] = "My purpose is to provide you with safety tips to help you navigate the dangers online.",
+            ["what can i ask"] = "You can ask me about password, phishing and browsing. I can also offer tips about public wifi, online scams, privacy, links in emails and app permissions." 
+        };
+        /// <summary>
         /// The dictionary maps each keyword to a list of responses. The keys are stored in lower case because the input is normalised before matching. Storing several
         /// responses per topic means the chatbot can pick a different tip each time, so the conversation stays varied rather than repeating the same line.
         /// </summary>
         private readonly Dictionary<string, List<string>> _responses = new()
         {
             // Key = keyword, Value = list of possible responses
-            ["how are you"] = new List<string> { "I am good. Thank you for asking." },
-            ["your purpose"] = new List<string> { "My purpose is to provide you with safety tips to help you navigate the dangers online." },
-            ["what can i ask"] = new List<string> { "You can ask me about password, phishing and browsing. I can also offer tips about public wifi, online scams, privacy, links in emails and app permissions." },
             ["password"] = new List<string> {
                 "Use a unique, long passphrase for every account and protect them all with multi-factor authentication (MFA).",
                 "Never reuse a password across multiple accounts; if one site suffers a data breach, your other logins remain safe.",
@@ -95,6 +103,31 @@
         private readonly Dictionary<string, List<int>> _shown = new();
 
         /// <summary>
+        /// Readable names for each topic key, used whenever the chatbot mentions a topic.
+        /// </summary>
+        private readonly Dictionary<string, string> _displayNames = new()
+        {
+            ["password"] = "password safety",
+            ["phishing"] = "phishing",
+            ["browsing"] = "safe browsing",
+            ["wifi"] = "public Wi-Fi",
+            ["scam"] = "online scams",
+            ["link"] = "links in emails",
+            ["permission"] = "app permissions",
+            ["privacy"] = "privacy"
+        };
+
+        /// <summary>
+        /// Converts a topic key into its readable name.
+        /// </summary>
+        /// <param name="key">The topic keyword.</param>
+        /// <returns>The readable name, or the key itself if there is no entry.</returns>
+        public string GetDisplayName(string key)
+        {
+            return _displayNames.TryGetValue(key, out string? name) ? name : key;
+        }
+
+        /// <summary>
         /// Searches the dictionary for the first keyword contained in the user's input and returns one of that topic's tips.
         /// </summary>
         /// <param name="input">This is the user's message, which is already trimmed and converted to lower case by the InputValidator.</param>
@@ -104,10 +137,19 @@
         /// </returns>
         public string GetResponseMatch(string input)
         {
+            // Check for general questions first
+            foreach (var item in _general)
+            {
+                if (input.Contains(item.Key))
+                {
+                    return item.Value;
+                }
+            }
+
             // Check each keyword in turn and return as soon as one is found 
             foreach (var item in _responses)
             {
-                if (input.Contains(item.Key))
+                if (Regex.IsMatch(input, $@"\b{Regex.Escape(item.Key)}s?\b"))
                 {
                     List<string> options = item.Value;
 
@@ -143,7 +185,7 @@
                         }
                     }
 
-                    // Picking from the tips not showen
+                    // Picking from the tips not shown
                     int index = remaining[_random.Next(remaining.Count)];
                     used.Add(index);
 
@@ -164,7 +206,8 @@
         public string? FindTopic(string input) {
             foreach (var item in _responses)
             {
-                if (input.Contains(item.Key)) {
+                if (Regex.IsMatch(input, $@"\b{Regex.Escape(item.Key)}s?\b"))
+                {
                     return item.Key;
                 }
             }
