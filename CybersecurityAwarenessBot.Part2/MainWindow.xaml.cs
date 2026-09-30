@@ -142,7 +142,7 @@ namespace CybersecurityAwarenessBot.Part2
 
             if (_awaitingName)
             {
-                _bot.User.Name = CleanName(userInput);
+                _bot.User.Name = _validator.CleanName(userInput);
                 _awaitingName = false;
 
                 AddMessage("You", userInput, true);
@@ -162,39 +162,6 @@ namespace CybersecurityAwarenessBot.Part2
 
             InputBox.Clear();
             InputBox.Focus();
-        }
-
-        /// <summary>
-        /// Pulls the name out of what the user typed. People often answer with a whole sentence such as "my name is Brittany", so the common lead-in phrases are
-        /// stripped before the name is stored.
-        /// </summary>
-        /// <param name="input">The raw text the user typed.</param>
-        /// <returns>The name on its own, capitalised.</returns>
-        private static string CleanName(string input)
-        {
-            string name = input.Trim();
-
-            string[] leadIns = { "my name is", "my name's", "i am", "i'm", "it is", "it's", "call me", "this is" };
-
-            foreach (string leadIn in leadIns)
-            {
-                if (name.StartsWith(leadIn, StringComparison.OrdinalIgnoreCase))
-                {
-                    name = name.Substring(leadIn.Length).Trim();
-                    break;
-                }
-            }
-
-            // Remove any trailing punctuation the user typed
-            name = name.TrimEnd('.', '!', '?', ',');
-
-            // Capitalise the first letter so "brittany" displays as "Brittany"
-            if (name.Length > 0)
-            {
-                name = char.ToUpper(name[0]) + name.Substring(1);
-            }
-
-            return name;
         }
     }
 }

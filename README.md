@@ -28,7 +28,7 @@ CybersecurityAwarenessBot.Part2/
     |   |-- ChatBot.cs                # Decides how the chatbot replies
     |   |-- BotResponses.cs           # Keyword to tip lookup with random selection
     |   |-- SentimentAnalyser.cs      # Detects emotion using a delegate
-    |   |-- InputValidator.cs         # Validates and normalises user input
+    |   |-- InputValidator.cs         # Validates and normalises input, and extracts the user's name
     |   |-- UserProfile.cs            # Stores the user's name and interests
     |   |-- LogoArt.cs                # Supplies the ASCII art logo
     |   `-- GreetingPlayer.cs         # Plays the WAV voice greeting
